@@ -16,6 +16,23 @@
       align-items: center;
     }
 
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2em;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.1em;
+      font-style: italic;
+      color: #444;
+    }
+
     .bio-card {
       background: white;
       border-radius: 15px;
@@ -26,7 +43,7 @@
       max-width: 400px;
     }
 
-    .bio-card h1 {
+    .bio-card h2 {
       margin-bottom: 10px;
       color: #333;
     }
@@ -36,7 +53,7 @@
       margin: 6px 0;
     }
 
-    /* Completely hide form and saved profiles */
+    /* Hide the form and saved profiles from public view */
     #bioForm,
     #bioList {
       display: none !important;
@@ -48,14 +65,19 @@
   </style>
 </head>
 <body>
+  <header>
+    <h1>Welcome to My Bio</h1>
+    <p>This is a High Intelligence Zone. Stay Woke 🧠🔥</p>
+  </header>
+
   <div class="bio-card" id="bioCard">
-    <h1 id="bioName">Loading...</h1>
+    <h2 id="bioName">Loading...</h2>
     <p id="bioAge"></p>
     <p id="bioGender"></p>
     <p id="bioOrigin"></p>
   </div>
 
-  <!-- Hidden form (not visible to public) -->
+  <!-- Hidden form (for your private use) -->
   <form id="bioForm">
     <input type="text" id="name" />
     <input type="number" id="age" />
@@ -74,7 +96,7 @@
         const data = await res.json();
 
         if (data.length > 0) {
-          const latest = data[data.length - 1]; // Get the most recent bio
+          const latest = data[data.length - 1]; // get latest record
           document.getElementById("bioName").textContent = latest.name;
           document.getElementById("bioAge").textContent = "Age: " + latest.age;
           document.getElementById("bioGender").textContent = "Gender: " + latest.gender;
