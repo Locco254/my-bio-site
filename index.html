@@ -85,7 +85,8 @@
       margin-right: 10px;
     }
 
-    #loginSection button {
+    #loginSection button,
+    #logoutBtn {
       padding: 10px 15px;
       border: none;
       background: #222;
@@ -94,8 +95,13 @@
       cursor: pointer;
     }
 
-    #loginSection button:hover {
+    #loginSection button:hover,
+    #logoutBtn:hover {
       background: #444;
+    }
+
+    #logoutBtn {
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -120,6 +126,7 @@
     <input type="text" id="gender" placeholder="Gender" /><br /><br />
     <input type="text" id="origin" placeholder="Origin" /><br /><br />
     <button type="submit">Save</button>
+    <button type="button" id="logoutBtn" onclick="logout()">Log Out</button>
   </form>
 
   <!-- Hidden list -->
@@ -132,22 +139,38 @@
   </div>
 
   <script>
-    const SECRET_KEY = "smartzone"; // change this to any word you want
+    const SECRET_KEY = "smartzone"; // change this if you want
 
-    // Show login screen if path is /login
+    // Show login page if path is /login
     if (window.location.pathname === "/login") {
-      document.getElementById("loginSection").classList.add("visible");
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (isLoggedIn === "true") {
+        showAdmin();
+      } else {
+        document.getElementById("loginSection").classList.add("visible");
+      }
     }
 
     function checkLogin() {
       const input = document.getElementById("loginPassword").value;
       if (input === SECRET_KEY) {
-        document.getElementById("bioForm").classList.add("visible");
-        document.getElementById("bioList").classList.add("visible");
-        document.getElementById("loginSection").innerHTML = "<p>✅ Logged in as admin</p>";
+        localStorage.setItem("isLoggedIn", "true");
+        showAdmin();
       } else {
         alert("Wrong password, try again.");
       }
+    }
+
+    function showAdmin() {
+      document.getElementById("bioForm").classList.add("visible");
+      document.getElementById("bioList").classList.add("visible");
+      document.getElementById("loginSection").innerHTML = "<p>✅ Logged in as admin</p>";
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      alert("You have been logged out.");
+      window.location.href = "/";
     }
 
     async function loadBio() {
