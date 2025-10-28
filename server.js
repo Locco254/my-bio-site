@@ -6,12 +6,10 @@ const path = require("path");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // Serve static frontend
+app.use(express.static("public"));
 
-// MongoDB connection
 const mongoURI = process.env.MONGODB_URI;
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
@@ -20,7 +18,6 @@ mongoose.connect(mongoURI, {
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Schema & model
 const personSchema = new mongoose.Schema({
   name: String,
   age: Number,
@@ -29,7 +26,6 @@ const personSchema = new mongoose.Schema({
 });
 const Person = mongoose.model("Person", personSchema);
 
-// API routes
 app.get("/people", async (req, res) => {
   try {
     const people = await Person.find();
@@ -49,11 +45,9 @@ app.post("/people", async (req, res) => {
   }
 });
 
-// Serve frontend for any other path
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
