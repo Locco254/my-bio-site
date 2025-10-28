@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path"); // <-- Add this line
 
 // ===== Initialize app =====
 const app = express();
@@ -10,6 +11,7 @@ const app = express();
 // ===== Middleware =====
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname))); // <-- Add this line to serve static files
 
 // ===== Connect to MongoDB Atlas =====
 const mongoURI = process.env.MONGODB_URI; // Use Render environment variable
@@ -75,6 +77,11 @@ app.delete("/people/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// ===== Serve index.html for root URL =====
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html")); // <-- Add this line
 });
 
 // ===== Start the server =====
