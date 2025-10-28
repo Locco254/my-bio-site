@@ -16,6 +16,12 @@ header {
 .tagline {
   color: #58a6ff;
   font-weight: 500;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px #58a6ff; }
+  to { text-shadow: 0 0 25px #58a6ff; }
 }
 
 section {
@@ -45,4 +51,8 @@ button {
 
 button:hover {
   background: #2ea043;
+}
+
+.hidden {
+  display: none;
 }
