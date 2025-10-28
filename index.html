@@ -6,138 +6,83 @@
   <title>My Bio</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #c2e9fb, #a1c4fd);
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
       margin: 0;
-      padding: 20px;
-      color: #222;
+      padding: 40px;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    h1 {
+    .bio-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       text-align: center;
-      margin-bottom: 20px;
     }
 
-    form {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 0 auto 30px auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .bio-card h1 {
+      margin-bottom: 10px;
     }
 
-    label {
-      display: block;
-      margin-top: 10px;
+    .bio-card p {
+      margin: 6px 0;
+      font-size: 1.1em;
     }
 
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 10px 15px;
-      background: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #357ab7;
-    }
-
-    .bio-list {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .bio-item {
-      border-bottom: 1px solid #eee;
-      padding: 10px 0;
-    }
-
-    .bio-item:last-child {
-      border: none;
+    /* Hide the admin section and bio list */
+    #bioForm,
+    #bioList {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <h1>My Personal Bio</h1>
+  <div class="bio-card" id="bioCard">
+    <h1 id="bioName">Loading...</h1>
+    <p id="bioAge"></p>
+    <p id="bioGender"></p>
+    <p id="bioOrigin"></p>
+  </div>
 
+  <!-- Hidden form (still active in the backend, just invisible) -->
   <form id="bioForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" required />
-
-    <label for="age">Age:</label>
-    <input type="number" id="age" required />
-
-    <label for="gender">Gender:</label>
-    <input type="text" id="gender" required />
-
-    <label for="origin">Origin:</label>
-    <input type="text" id="origin" required />
-
-    <button type="submit">Save My Bio</button>
+    <input type="text" id="name" />
+    <input type="number" id="age" />
+    <input type="text" id="gender" />
+    <input type="text" id="origin" />
+    <button type="submit">Save</button>
   </form>
 
-  <div class="bio-list" id="bioList"></div>
+  <!-- Hidden list of saved bios -->
+  <div id="bioList"></div>
 
   <script>
-    const form = document.getElementById("bioForm");
-    const bioList = document.getElementById("bioList");
-
-    // Fetch bio data
     async function loadBio() {
-      const res = await fetch("/people");
-      const data = await res.json();
+      try {
+        const res = await fetch("/people");
+        const data = await res.json();
 
-      bioList.innerHTML = data
-        .map(
-          (p) => `
-        <div class="bio-item">
-          <strong>${p.name}</strong> <br>
-          Age: ${p.age} <br>
-          Gender: ${p.gender} <br>
-          Origin: ${p.origin}
-        </div>
-      `
-        )
-        .join("");
+        if (data.length > 0) {
+          const latest = data[data.length - 1]; // get the latest saved entry
+
+          document.getElementById("bioName").textContent = latest.name;
+          document.getElementById("bioAge").textContent = "Age: " + latest.age;
+          document.getElementById("bioGender").textContent =
+            "Gender: " + latest.gender;
+          document.getElementById("bioOrigin").textContent =
+            "Origin: " + latest.origin;
+        } else {
+          document.getElementById("bioName").textContent = "No bio found yet";
+        }
+      } catch (err) {
+        console.error("Error loading bio:", err);
+      }
     }
-
-    // Handle form submit
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const newBio = {
-        name: document.getElementById("name").value,
-        age: document.getElementById("age").value,
-        gender: document.getElementById("gender").value,
-        origin: document.getElementById("origin").value,
-      };
-
-      await fetch("/people", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newBio),
-      });
-
-      form.reset();
-      loadBio();
-    });
 
     loadBio();
   </script>
