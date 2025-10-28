@@ -1,41 +1,35 @@
-// ===== Import required packages =====
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 
-// ===== Initialize app =====
 const app = express();
 
-// ===== Middleware =====
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // Serve HTML, CSS, JS from the 'public' folder
+app.use(express.static("public")); // Serve static frontend
 
-// ===== Connect to MongoDB Atlas =====
-const mongoURI = process.env.MONGODB_URI; // Render environment variable
-mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+// MongoDB connection
+const mongoURI = process.env.MONGODB_URI;
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// ===== Define schema and model =====
+// Schema & model
 const personSchema = new mongoose.Schema({
   name: String,
   age: Number,
   gender: String,
   origin: String,
 });
-
 const Person = mongoose.model("Person", personSchema);
 
-// ===== API Routes =====
-
-// Get all people
+// API routes
 app.get("/people", async (req, res) => {
   try {
     const people = await Person.find();
@@ -45,7 +39,6 @@ app.get("/people", async (req, res) => {
   }
 });
 
-// Add a new person
 app.post("/people", async (req, res) => {
   try {
     const newPerson = new Person(req.body);
@@ -56,37 +49,11 @@ app.post("/people", async (req, res) => {
   }
 });
 
-// Update a person
-app.put("/people/:id", async (req, res) => {
-  try {
-    const updatedPerson = await Person.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(updatedPerson);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Delete a person
-app.delete("/people/:id", async (req, res) => {
-  try {
-    await Person.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ===== Serve frontend routes =====
+// Serve frontend for any other path
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ===== Start the server =====
+// Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
