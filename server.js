@@ -11,23 +11,24 @@ const app = express();
 // ===== Middleware =====
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // serve HTML, CSS, JS files from the 'public' folder
+app.use(express.static("public")); // Serve HTML, CSS, JS from the 'public' folder
 
 // ===== Connect to MongoDB Atlas =====
-const mongoURI = process.env.MONGODB_URI; // Use Render environment variable
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("Connected to MongoDB Atlas"))
-.catch(err => console.error("MongoDB connection error:", err));
+const mongoURI = process.env.MONGODB_URI; // Render environment variable
+mongoose
+  .connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB Atlas"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // ===== Define schema and model =====
 const personSchema = new mongoose.Schema({
   name: String,
   age: Number,
   gender: String,
-  origin: String
+  origin: String,
 });
 
 const Person = mongoose.model("Person", personSchema);
@@ -80,7 +81,6 @@ app.delete("/people/:id", async (req, res) => {
 });
 
 // ===== Serve frontend routes =====
-// Make /login and any other path load your index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -88,5 +88,5 @@ app.get("*", (req, res) => {
 // ===== Start the server =====
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
