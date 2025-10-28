@@ -4,195 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Bio</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #a8edea, #fed6e3);
-      margin: 0;
-      padding: 50px;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeIn 1s ease-in;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease-in;
-    }
-
-    header h1 {
-      font-size: 2em;
-      color: #111;
-      margin-bottom: 10px;
-    }
-
-    header p {
-      font-size: 1.1em;
-      font-style: italic;
-      color: #444;
-    }
-
-    .bio-card {
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-      animation: fadeIn 1.2s ease-in;
-    }
-
-    .bio-card h2 {
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .bio-card p {
-      font-size: 1.1em;
-      margin: 6px 0;
-    }
-
-    #bioForm,
-    #bioList,
-    #loginSection {
-      display: none;
-      visibility: hidden;
-      opacity: 0;
-      transition: all 0.4s ease;
-    }
-
-    .visible {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      height: auto !important;
-    }
-
-    #loginSection input {
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-
-    #loginSection button,
-    #logoutBtn {
-      padding: 10px 15px;
-      border: none;
-      background: #222;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #loginSection button:hover,
-    #logoutBtn:hover {
-      background: #444;
-    }
-
-    #logoutBtn {
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <h1>Welcome to My Bio</h1>
-    <p>This is a High Intelligence Zone. Stay Woke 🧠🔥</p>
+    <p class="tagline">This is a High Intelligence Zone. Stay Woke 🧠</p>
   </header>
 
-  <div class="bio-card" id="bioCard">
-    <h2 id="bioName">Loading...</h2>
-    <p id="bioAge"></p>
-    <p id="bioGender"></p>
-    <p id="bioOrigin"></p>
-  </div>
+  <!-- ===== Login Section ===== -->
+  <section id="login-section">
+    <h2>Access Restricted Area</h2>
+    <input type="password" id="password" placeholder="Enter password" />
+    <button id="loginBtn">Login</button>
+    <p id="login-message"></p>
+  </section>
 
-  <!-- Hidden admin form -->
-  <form id="bioForm">
-    <h3>Edit Bio Info</h3>
-    <input type="text" id="name" placeholder="Name" /><br /><br />
-    <input type="number" id="age" placeholder="Age" /><br /><br />
-    <input type="text" id="gender" placeholder="Gender" /><br /><br />
-    <input type="text" id="origin" placeholder="Origin" /><br /><br />
-    <button type="submit">Save</button>
-    <button type="button" id="logoutBtn" onclick="logout()">Log Out</button>
-  </form>
+  <!-- ===== Hidden Content ===== -->
+  <section id="add-info-section" class="hidden">
+    <h2>Add Your Info</h2>
+    <form id="bioForm">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="number" id="age" placeholder="Age" required />
+      <input type="text" id="gender" placeholder="Gender" required />
+      <input type="text" id="origin" placeholder="Origin" required />
+      <button type="submit">Save</button>
+    </form>
+  </section>
 
-  <!-- Hidden list -->
-  <div id="bioList"></div>
+  <section id="profiles-section" class="hidden">
+    <h2>Saved Profiles</h2>
+    <div id="profiles"></div>
+  </section>
 
-  <!-- Hidden login section -->
-  <div id="loginSection">
-    <input type="password" id="loginPassword" placeholder="Enter secret password" />
-    <button onclick="checkLogin()">Login</button>
-  </div>
-
-  <script>
-    const SECRET_KEY = "smartzone"; // change this if you want
-
-    // Show login page if path is /login
-    if (window.location.pathname === "/login") {
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
-      if (isLoggedIn === "true") {
-        showAdmin();
-      } else {
-        document.getElementById("loginSection").classList.add("visible");
-      }
-    }
-
-    function checkLogin() {
-      const input = document.getElementById("loginPassword").value;
-      if (input === SECRET_KEY) {
-        localStorage.setItem("isLoggedIn", "true");
-        showAdmin();
-      } else {
-        alert("Wrong password, try again.");
-      }
-    }
-
-    function showAdmin() {
-      document.getElementById("bioForm").classList.add("visible");
-      document.getElementById("bioList").classList.add("visible");
-      document.getElementById("loginSection").innerHTML = "<p>✅ Logged in as admin</p>";
-    }
-
-    function logout() {
-      localStorage.removeItem("isLoggedIn");
-      alert("You have been logged out.");
-      window.location.href = "/";
-    }
-
-    async function loadBio() {
-      try {
-        const res = await fetch("/people");
-        const data = await res.json();
-
-        if (data.length > 0) {
-          const latest = data[data.length - 1];
-          document.getElementById("bioName").textContent = latest.name;
-          document.getElementById("bioAge").textContent = "Age: " + latest.age;
-          document.getElementById("bioGender").textContent = "Gender: " + latest.gender;
-          document.getElementById("bioOrigin").textContent = "Origin: " + latest.origin;
-        } else {
-          document.getElementById("bioName").textContent = "No bio found yet";
-        }
-      } catch (err) {
-        console.error("Error loading bio:", err);
-      }
-    }
-
-    loadBio();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

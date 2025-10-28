@@ -3,7 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const path = require("path"); // <-- Add this line
+const path = require("path");
 
 // ===== Initialize app =====
 const app = express();
@@ -11,7 +11,7 @@ const app = express();
 // ===== Middleware =====
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname))); // <-- Add this line to serve static files
+app.use(express.static("public")); // serve HTML, CSS, JS files from the 'public' folder
 
 // ===== Connect to MongoDB Atlas =====
 const mongoURI = process.env.MONGODB_URI; // Use Render environment variable
@@ -79,9 +79,10 @@ app.delete("/people/:id", async (req, res) => {
   }
 });
 
-// ===== Serve index.html for root URL =====
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html")); // <-- Add this line
+// ===== Serve frontend routes =====
+// Make /login and any other path load your index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // ===== Start the server =====
