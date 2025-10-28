@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bio Page</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== BIO SECTION ===== -->
+  <header class="bio-header">
+    <h1>Welcome to My Bio</h1>
+    <p>Hello! I’m <strong>Your Name</strong>, a passionate developer and creative thinker.  
+      I love building digital experiences and learning new tech every day.</p>
+  </header>
+
+  <section class="bio-details">
+    <img src="profile.jpg" alt="Profile Picture" class="profile-pic" />
+    <div class="about">
+      <h2>About Me</h2>
+      <p>I’m currently exploring web development — HTML, CSS, and JavaScript.  
+      This page is a small project that shows both who I am and what I can build!</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- ===== INTERACTIVE INFO SECTION ===== -->
+  <section class="add-info">
+    <h2>Add Your Info</h2>
+    <form id="infoForm">
+      <input type="text" id="name" placeholder="Enter name" required>
+      <input type="number" id="age" placeholder="Enter age" required>
+      <select id="gender" required>
+        <option value="">Select gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <input type="text" id="origin" placeholder="Enter origin" required>
+      <button type="submit">Add</button>
+    </form>
+  </section>
+
+  <section class="info-list">
+    <h2>Saved Profiles</h2>
+    <table id="infoTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Origin</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> My Bio Page</p>
+  </footer>
+
+  <script>
+    // ===== CHANGE THIS TO YOUR LIVE BACKEND URL =====
+    const API_URL = "https://your-render-backend.onrender.com/people";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const form = document.getElementById("infoForm");
+    const tableBody = document.querySelector("#infoTable tbody");
+
+    // Fetch and display existing people
+    async function loadData() {
+      const res = await fetch(API_URL);
+      const people = await res.json();
+      renderTable(people);
+    }
+
+    loadData();
+
+    // Add new person
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const gender = document.getElementById("gender").value;
+      const origin = document.getElementById("origin").value.trim();
+
+      if (!name || !age || !gender || !origin) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, age, gender, origin })
+      });
+
+      const newPerson = await res.json();
+      appendRow(newPerson);
+      form.reset();
+    });
+
+    // Render table
+    function renderTable(people) {
+      tableBody.innerHTML = "";
+      people.forEach(appendRow);
+    }
+
+    function appendRow(person) {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input value="${person.name}" onchange="updateField('${person._id}', 'name', this.value)"></td>
+        <td><input type="number" value="${person.age}" onchange="updateField('${person._id}', 'age', this.value)"></td>
+        <td>
+          <select onchange="updateField('${person._id}', 'gender', this.value)">
+            <option value="Male" ${person.gender === "Male" ? "selected" : ""}>Male</option>
+            <option value="Female" ${person.gender === "Female" ? "selected" : ""}>Female</option>
+          </select>
+        </td>
+        <td><input value="${person.origin}" onchange="updateField('${person._id}', 'origin', this.value)"></td>
+        <td><button onclick="deleteRow('${person._id}', this)">Delete</button></td>
+      `;
+      tableBody.appendChild(row);
+    }
+
+    // Update person in backend
+    async function updateField(id, field, value) {
+      await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: value })
+      });
+    }
+
+    // Delete person
+    async function deleteRow(id, btn) {
+      if (confirm("Are you sure you want to delete this entry?")) {
+        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        btn.closest("tr").remove();
+      }
+    }
+  </script>
+</body>
+</html>

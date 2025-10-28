@@ -1,0 +1,121 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== BIO SECTION ===== */
+.bio-header {
+  background-color: #0077b6;
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.bio-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+  background-color: white;
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #0077b6;
+}
+
+.about {
+  max-width: 500px;
+}
+
+/* ===== INTERACTIVE SECTION ===== */
+.add-info {
+  background: #ffffff;
+  margin: 2rem auto;
+  max-width: 700px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.add-info form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.add-info input,
+.add-info select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 150px;
+}
+
+.add-info button {
+  background-color: #0077b6;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.add-info button:hover {
+  background-color: #005f8a;
+}
+
+/* ===== TABLE ===== */
+.info-list {
+  background: #fff;
+  margin: 2rem auto;
+  max-width: 800px;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-list th, .info-list td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.info-list th {
+  background: #0077b6;
+  color: white;
+}
+
+.info-list button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.info-list button:hover {
+  background: #b02a37;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #0077b6;
+  color: white;
+  margin-top: 2rem;
+}
