@@ -6,10 +6,10 @@
   <title>My Bio</title>
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
+      font-family: "Poppins", sans-serif;
       background: linear-gradient(135deg, #a8edea, #fed6e3);
       margin: 0;
-      padding: 40px;
+      padding: 50px;
       color: #333;
       display: flex;
       flex-direction: column;
@@ -17,27 +17,33 @@
     }
 
     .bio-card {
-      background: #fff;
-      padding: 30px;
+      background: white;
       border-radius: 15px;
-      max-width: 400px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 30px;
       text-align: center;
+      width: 90%;
+      max-width: 400px;
     }
 
     .bio-card h1 {
       margin-bottom: 10px;
+      color: #333;
     }
 
     .bio-card p {
-      margin: 6px 0;
       font-size: 1.1em;
+      margin: 6px 0;
     }
 
-    /* Hide the admin section and bio list */
+    /* Completely hide form and saved profiles */
     #bioForm,
     #bioList {
-      display: none;
+      display: none !important;
+      visibility: hidden;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -49,7 +55,7 @@
     <p id="bioOrigin"></p>
   </div>
 
-  <!-- Hidden form (still active in the backend, just invisible) -->
+  <!-- Hidden form (not visible to public) -->
   <form id="bioForm">
     <input type="text" id="name" />
     <input type="number" id="age" />
@@ -68,14 +74,11 @@
         const data = await res.json();
 
         if (data.length > 0) {
-          const latest = data[data.length - 1]; // get the latest saved entry
-
+          const latest = data[data.length - 1]; // Get the most recent bio
           document.getElementById("bioName").textContent = latest.name;
           document.getElementById("bioAge").textContent = "Age: " + latest.age;
-          document.getElementById("bioGender").textContent =
-            "Gender: " + latest.gender;
-          document.getElementById("bioOrigin").textContent =
-            "Origin: " + latest.origin;
+          document.getElementById("bioGender").textContent = "Gender: " + latest.gender;
+          document.getElementById("bioOrigin").textContent = "Origin: " + latest.origin;
         } else {
           document.getElementById("bioName").textContent = "No bio found yet";
         }
